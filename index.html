@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>looqa — Dein Betrieb. Immer erreichbar.</title>
+<meta name="description" content="looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kundenfragen beantworten, Termine buchen, Bestellungen annehmen — automatisch, 24/7.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1B2B1E;
+    --forest-mid: #2A3F2E;
+    --forest-light: #3A5340;
+    --sage: #7BC67E;
+    --sage-dim: #5EA661;
+    --sage-soft: #A8DBA8;
+    --sage-glow: rgba(123,198,126,0.08);
+    --sand: #FAF8F5;
+    --sand-warm: #F0EDE6;
+    --sand-mid: #E2DED4;
+    --text-primary: #1B2B1E;
+    --text-secondary: #5A6B5E;
+    --text-muted: #8A9A8E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--sand);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ========== NAV ========== */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 14px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(250,248,245,0.85);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(226,222,212,0.4);
+    transition: padding 0.3s;
+  }
+  .nav-brand {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 22px; letter-spacing: -1px;
+    color: var(--forest); text-decoration: none;
+  }
+  .nav-brand span { color: var(--sage-dim); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .lang-toggle {
+    display: flex; gap: 0;
+    border: 1px solid var(--sand-mid); border-radius: 8px; overflow: hidden;
+    background: var(--sand-warm);
+  }
+  .lang-btn {
+    padding: 6px 14px; font-size: 12px; font-weight: 600;
+    border: none; background: transparent; color: var(--text-muted);
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'Outfit', sans-serif;
+  }
+  .lang-btn.active {
+    background: var(--forest); color: var(--sand);
+  }
+  .nav-login {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600; font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .nav-login:hover { color: var(--forest); }
+  .nav-cta {
+    padding: 8px 22px; border-radius: 8px;
+    background: var(--sage); color: var(--forest);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 13px;
+    text-decoration: none; transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ========== HERO ========== */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 120px 32px 80px;
+    background: var(--forest); position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute;
+    top: -30%; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 900px;
+    background: radial-gradient(circle, rgba(123,198,126,0.07) 0%, transparent 65%);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(to top, rgba(27,43,30,1), transparent);
+  }
+  .hero-content { position: relative; z-index: 2; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 18px; border: 1px solid var(--forest-light);
+    border-radius: 100px; margin-bottom: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--sage-soft); letter-spacing: 0.5px;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; background: var(--sage);
+    border-radius: 50%; animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  .hero h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 7vw, 72px);
+    letter-spacing: -2.5px; line-height: 1.05;
+    color: var(--sand); margin-bottom: 20px;
+    max-width: 700px;
+  }
+  .hero h1 .accent { color: var(--sage); }
+  .hero .sub {
+    font-size: 17px; color: var(--sage-soft);
+    font-weight: 300; line-height: 1.7;
+    max-width: 480px; margin: 0 auto 36px;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px; border-radius: 10px;
+    background: var(--sage); color: var(--forest);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 15px;
+    text-decoration: none; transition: transform 0.2s, opacity 0.2s;
+  }
+  .hero-cta:hover { transform: translateY(-1px); opacity: 0.9; }
+  .hero-cta svg { width: 16px; height: 16px; }
+
+  .hero-visual {
+    position: relative; z-index: 2;
+    margin-top: 56px;
+    background: var(--forest-mid);
+    border: 1px solid var(--forest-light);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 420px; width: 100%;
+  }
+  .hv-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+  }
+  .hv-avatar {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--sage); display: flex; align-items: center; justify-content: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 11px; color: var(--forest);
+  }
+  .hv-name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 14px; color: var(--sand);
+  }
+  .hv-via {
+    font-size: 11px; color: var(--forest-light); font-weight: 400;
+  }
+  .hv-status {
+    margin-left: auto; display: flex; align-items: center; gap: 5px;
+    font-size: 10px; color: var(--sage);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hv-status .dot { width: 5px; height: 5px; background: var(--sage); border-radius: 50%; }
+  .chat-demo { display: flex; flex-direction: column; gap: 8px; }
+  .chat-bub {
+    padding: 10px 14px; border-radius: 12px;
+    font-size: 13px; line-height: 1.5; max-width: 88%;
+    animation: fadeUp 0.5s ease both;
+  }
+  .chat-bub:nth-child(1) { animation-delay: 0.3s; }
+  .chat-bub:nth-child(2) { animation-delay: 1s; }
+  .chat-bub:nth-child(3) { animation-delay: 1.8s; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .chat-bub.user {
+    background: rgba(250,248,245,0.1); color: var(--sand);
+    align-self: flex-end; border-bottom-right-radius: 4px;
+  }
+  .chat-bub.agent {
+    background: var(--sage-glow); border: 1px solid rgba(123,198,126,0.12);
+    color: var(--sand); align-self: flex-start; border-bottom-left-radius: 4px;
+  }
+
+  /* ========== PROBLEM ========== */
+  .problem {
+    padding: 100px 32px;
+    text-align: center;
+  }
+  .problem-inner { max-width: 640px; margin: 0 auto; }
+  .problem h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 32px; letter-spacing: -1px;
+    margin-bottom: 20px; line-height: 1.15;
+  }
+  .problem p {
+    font-size: 16px; color: var(--text-secondary);
+    font-weight: 300; line-height: 1.8;
+  }
+  .problem-stats {
+    display: flex; justify-content: center; gap: 48px;
+    margin-top: 40px;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-number {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 36px; letter-spacing: -1.5px;
+    color: var(--sage-dim);
+  }
+  .stat-label {
+    font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: 400;
+  }
+
+  /* ========== HOW IT WORKS ========== */
+  .steps {
+    padding: 100px 32px;
+    background: var(--forest);
+  }
+  .steps-inner { max-width: 960px; margin: 0 auto; }
+  .steps-header {
+    text-align: center; margin-bottom: 64px;
+  }
+  .steps-header .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--sage); letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .steps-header h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 32px; letter-spacing: -1px;
+    color: var(--sand);
+  }
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .step-card {
+    background: var(--forest-mid);
+    border: 1px solid var(--forest-light);
+    border-radius: 16px; padding: 32px 24px;
+    transition: border-color 0.3s;
+  }
+  .step-card:hover { border-color: var(--sage); }
+  .step-num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 40px; color: var(--sage);
+    letter-spacing: -2px; margin-bottom: 16px; line-height: 1;
+  }
+  .step-card h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 18px; color: var(--sand);
+    margin-bottom: 8px;
+  }
+  .step-card p {
+    font-size: 14px; color: var(--sage-soft); font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ========== FEATURES ========== */
+  .features {
+    padding: 100px 32px;
+  }
+  .features-inner { max-width: 960px; margin: 0 auto; }
+  .features-header {
+    text-align: center; margin-bottom: 56px;
+  }
+  .features-header .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--sage-dim); letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .features-header h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 32px; letter-spacing: -1px;
+  }
+  .feature-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .feature-card {
+    background: #FFFFFF;
+    border: 1px solid var(--sand-mid);
+    border-radius: 16px; padding: 32px 28px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .feature-card:hover {
+    border-color: var(--sage);
+    box-shadow: 0 4px 24px var(--sage-glow);
+  }
+  .feature-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--sage-glow);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px; font-size: 18px;
+  }
+  .feature-card h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 17px; margin-bottom: 8px;
+  }
+  .feature-card p {
+    font-size: 14px; color: var(--text-secondary); font-weight: 300; line-height: 1.6;
+  }
+
+  /* ========== SOCIAL PROOF ========== */
+  .proof {
+    padding: 80px 32px;
+    text-align: center;
+  }
+  .proof-card {
+    max-width: 560px; margin: 0 auto;
+    background: var(--forest); border-radius: 16px;
+    padding: 40px 36px; color: var(--sand);
+  }
+  .proof-card .location-pin { font-size: 28px; margin-bottom: 16px; }
+  .proof-card h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 22px; letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .proof-card p {
+    font-size: 14px; color: var(--sage-soft); font-weight: 300; line-height: 1.7;
+  }
+
+  /* ========== FINAL CTA ========== */
+  .final-cta {
+    padding: 100px 32px;
+    text-align: center;
+  }
+  .final-cta h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 36px; letter-spacing: -1.5px;
+    margin-bottom: 16px; line-height: 1.1;
+  }
+  .final-cta h2 .accent { color: var(--sage-dim); }
+  .final-cta p {
+    font-size: 16px; color: var(--text-secondary); font-weight: 300;
+    max-width: 420px; margin: 0 auto 28px; line-height: 1.7;
+  }
+  .final-cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 36px; border-radius: 10px;
+    background: var(--forest); color: var(--sand);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 15px;
+    text-decoration: none; transition: transform 0.2s, opacity 0.2s;
+  }
+  .final-cta-btn:hover { transform: translateY(-1px); opacity: 0.9; }
+
+  /* ========== FOOTER ========== */
+  .footer {
+    padding: 40px 32px;
+    border-top: 1px solid var(--sand-mid);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 960px; margin: 0 auto;
+  }
+  .footer-brand {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 16px; letter-spacing: -0.5px;
+    color: var(--forest);
+  }
+  .footer-brand span { color: var(--sage-dim); }
+  .footer-text {
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .nav { padding: 12px 20px; }
+    .nav-cta { display: none; }
+    section, .problem, .steps, .features, .proof, .final-cta { padding: 64px 20px; }
+    .steps-grid, .feature-grid { grid-template-columns: 1fr; }
+    .problem-stats { flex-direction: column; gap: 24px; }
+    .hero h1 { letter-spacing: -1.5px; }
+    .hero-visual { margin-left: 20px; margin-right: 20px; }
+    .footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav-brand">loo<span>qa</span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="de">DE</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="https://app.looqa.de/login" class="nav-login" data-de="Login" data-en="Log in">Login</a>
+    <a href="https://app.looqa.de/onboarding/step1" class="nav-cta" data-de="Jetzt starten" data-en="Get started">Jetzt starten</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><span class="dot"></span><span data-de="Jetzt in Entwicklung" data-en="Now in development">Jetzt in Entwicklung</span></div>
+    <h1 data-de='Dein Betrieb.<br>Immer <span class="accent">erreichbar.</span>' data-en='Your business.<br>Always <span class="accent">open.</span>'>Dein Betrieb.<br>Immer <span class="accent">erreichbar.</span></h1>
+    <p class="sub" data-de="looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kundenfragen beantworten, Termine buchen, Bestellungen annehmen — automatisch, 24/7." data-en="looqa gives every local business its own AI agent. Answer customer questions, book appointments, take orders — automatically, 24/7.">looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kundenfragen beantworten, Termine buchen, Bestellungen annehmen — automatisch, 24/7.</p>
+    <a href="https://app.looqa.de/onboarding/step1" class="hero-cta">
+      <span data-de="Kostenlos starten" data-en="Start for free">Kostenlos starten</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </a>
+
+    <div class="hero-visual">
+      <div class="hv-header">
+        <div class="hv-avatar">SA</div>
+        <div>
+          <div class="hv-name">Salon Anna</div>
+          <div class="hv-via">via loo<span style="color:var(--sage);">qa</span></div>
+        </div>
+        <div class="hv-status"><span class="dot"></span> Online</div>
+      </div>
+      <div class="chat-demo">
+        <div class="chat-bub user" data-de="Habt ihr Samstag noch Platz?" data-en="Do you have availability on Saturday?">Habt ihr Samstag noch Platz?</div>
+        <div class="chat-bub agent" data-de="Samstag um 11 oder 15 Uhr wäre noch frei bei Lisa. Soll ich direkt buchen?" data-en="Saturday at 11am or 3pm is available with Lisa. Want me to book it?">Samstag um 11 oder 15 Uhr wäre noch frei bei Lisa. Soll ich direkt buchen?</div>
+        <div class="chat-bub user" data-de="15 Uhr bitte!" data-en="3pm please!">15 Uhr bitte!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="problem-inner">
+    <h2 data-de='Lokale Betriebe verlieren jeden Tag Kunden.' data-en='Local businesses lose customers every day.'>Lokale Betriebe verlieren jeden Tag Kunden.</h2>
+    <p data-de="Verpasste Anrufe. Keine Online-Buchung. Kunden die zur Konkurrenz gehen weil niemand antwortet. Dein Betrieb ist gut — aber nicht immer erreichbar." data-en="Missed calls. No online booking. Customers going to competitors because no one answers. Your business is great — just not always reachable.">Verpasste Anrufe. Keine Online-Buchung. Kunden die zur Konkurrenz gehen weil niemand antwortet. Dein Betrieb ist gut — aber nicht immer erreichbar.</p>
+    <div class="problem-stats">
+      <div class="stat">
+        <div class="stat-number">62%</div>
+        <div class="stat-label" data-de="der Anrufe werden verpasst" data-en="of calls go unanswered">der Anrufe werden verpasst</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">78%</div>
+        <div class="stat-label" data-de="buchen lieber online" data-en="prefer to book online">buchen lieber online</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">5 min</div>
+        <div class="stat-label" data-de="bis dein Agent live ist" data-en="until your agent is live">bis dein Agent live ist</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="steps">
+  <div class="steps-inner">
+    <div class="steps-header">
+      <div class="label" data-de="So funktioniert's" data-en="How it works">So funktioniert's</div>
+      <h2 data-de="In 3 Schritten live." data-en="Live in 3 steps.">In 3 Schritten live.</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3 data-de="Registrieren" data-en="Sign up">Registrieren</h3>
+        <p data-de="Name, Adresse, Öffnungszeiten. Dauert 2 Minuten, geht vom Handy." data-en="Name, address, opening hours. Takes 2 minutes, works from your phone.">Name, Adresse, Öffnungszeiten. Dauert 2 Minuten, geht vom Handy.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3 data-de="Wissen füttern" data-en="Add knowledge">Wissen füttern</h3>
+        <p data-de="Website-URL eingeben, PDF hochladen oder einfach eintippen. Dein Agent lernt dein Geschäft." data-en="Enter your website URL, upload a PDF, or just type it in. Your agent learns your business.">Website-URL eingeben, PDF hochladen oder einfach eintippen. Dein Agent lernt dein Geschäft.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3 data-de="Live schalten" data-en="Go live">Live schalten</h3>
+        <p data-de="Agent testen, veröffentlichen, fertig. Kunden können sofort chatten." data-en="Test your agent, publish, done. Customers can chat right away.">Agent testen, veröffentlichen, fertig. Kunden können sofort chatten.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-inner">
+    <div class="features-header">
+      <div class="label" data-de="Was looqa kann" data-en="What looqa does">Was looqa kann</div>
+      <h2 data-de="Alles was dein Betrieb braucht." data-en="Everything your business needs.">Alles was dein Betrieb braucht.</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3 data-de="AI-Agent" data-en="AI Agent">AI-Agent</h3>
+        <p data-de="Beantwortet Kundenfragen sofort — basierend auf deinem echten Betriebswissen. Keine generischen Antworten." data-en="Answers customer questions instantly — based on your actual business knowledge. No generic responses.">Beantwortet Kundenfragen sofort — basierend auf deinem echten Betriebswissen. Keine generischen Antworten.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📚</div>
+        <h3 data-de="Wissensbasis" data-en="Knowledge Base">Wissensbasis</h3>
+        <p data-de="Importiere deine Website, lade PDFs hoch oder tippe Infos direkt ein. Der Agent weiß was du weißt." data-en="Import your website, upload PDFs, or type info directly. Your agent knows what you know.">Importiere deine Website, lade PDFs hoch oder tippe Infos direkt ein. Der Agent weiß was du weißt.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3 data-de="Termine & Bestellungen" data-en="Bookings & Orders">Termine & Bestellungen</h3>
+        <p data-de="Kunden buchen Termine oder bestellen direkt im Chat. Du siehst alles im Dashboard." data-en="Customers book appointments or place orders right in the chat. You see everything in the dashboard.">Kunden buchen Termine oder bestellen direkt im Chat. Du siehst alles im Dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3 data-de="Dashboard" data-en="Dashboard">Dashboard</h3>
+        <p data-de="Alle Gespräche, Buchungen und Insights an einem Ort. Übernimm jederzeit selbst den Chat." data-en="All conversations, bookings, and insights in one place. Take over any chat at any time.">Alle Gespräche, Buchungen und Insights an einem Ort. Übernimm jederzeit selbst den Chat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof">
+  <div class="proof-card">
+    <div class="location-pin">📍</div>
+    <h3 data-de="Bald live in Essen-Rüttenscheid." data-en="Coming soon to Essen-Rüttenscheid.">Bald live in Essen-Rüttenscheid.</h3>
+    <p data-de="Wir starten mit lokalen Betrieben im Herzen des Ruhrgebiets. Du willst dabei sein? Meld dich." data-en="We're starting with local businesses in the heart of the Ruhr area. Want to be part of it? Get in touch.">Wir starten mit lokalen Betrieben im Herzen des Ruhrgebiets. Du willst dabei sein? Meld dich.</p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2 data-de='Dein Betrieb verdient<br>einen <span class="accent">AI-Agent.</span>' data-en='Your business deserves<br>an <span class="accent">AI agent.</span>'>Dein Betrieb verdient<br>einen <span class="accent">AI-Agent.</span></h2>
+  <p data-de="Kostenlos starten. In 5 Minuten live. Keine Kreditkarte nötig." data-en="Start for free. Live in 5 minutes. No credit card required.">Kostenlos starten. In 5 Minuten live. Keine Kreditkarte nötig.</p>
+  <a href="https://app.looqa.de/onboarding/step1" class="final-cta-btn">
+    <span data-de="Jetzt starten" data-en="Get started">Jetzt starten</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">loo<span>qa</span></div>
+  <div class="footer-text" data-de="Made in Essen · © 2026 looqa" data-en="Made in Essen · © 2026 looqa">Made in Essen · © 2026 looqa</div>
+</footer>
+
+<script>
+  // i18n toggle
+  const langBtns = document.querySelectorAll('.lang-btn');
+  let currentLang = 'de';
+
+  langBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      if (lang === currentLang) return;
+      currentLang = lang;
+
+      // Update active state
+      langBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Update html lang
+      document.documentElement.lang = lang;
+
+      // Update all translatable elements
+      document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+        const text = el.getAttribute('data-' + lang);
+        if (text) el.innerHTML = text;
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
