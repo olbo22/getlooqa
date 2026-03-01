@@ -68,11 +68,6 @@ section[id] { scroll-margin-top: 72px; }
 }
 .nav-cta:hover { opacity:0.85; }
 
-/* === FLOATING PILL CTA (mobile only) === */
-.floating-pill {
-  display:none; /* hidden on desktop */
-}
-
 /* === HERO === */
 .hero {
   min-height:100vh;
@@ -539,25 +534,11 @@ section[id] { scroll-margin-top: 72px; }
   .sides-grid { grid-template-columns:1fr; }
 }
 @media (max-width:768px) {
-  .nav { padding:12px 20px; }
+  .nav { padding:10px 12px 10px 20px; justify-content:space-between; }
   .nav-links { display:none; }
-  .nav-cta { display:none; }
   .lang-toggle { display:none; }
-  .floating-pill {
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-    z-index:100;
-    padding:12px 28px;
-    background:var(--sage); color:var(--forest);
-    font-family:'Plus Jakarta Sans',sans-serif;
-    font-weight:700; font-size:14px;
-    text-decoration:none; white-space:nowrap;
-    border-radius:100px;
-    box-shadow: 0 4px 24px rgba(27,43,30,0.18);
-    transition: transform 0.2s, opacity 0.2s;
-  }
-  .floating-pill:hover { transform:translateX(-50%) translateY(-1px); opacity:0.9; }
-  .floating-pill svg { width:14px; height:14px; }
+  .nav-cta { padding:8px 20px; border-radius:100px; font-size:12px; }
+  .floating-pill { display:none; }
   .phone { width:240px; height:500px; border-radius:28px; }
   .phone-search { margin:0 12px 6px; padding:7px 10px; font-size:10px; }
   .phone-chips { padding:0 12px 6px; gap:4px; }
@@ -619,11 +600,6 @@ section[id] { scroll-margin-top: 72px; }
     <a href="#waitlist" class="nav-cta" data-de="Für Betriebe →" data-en="For businesses →">Für Betriebe →</a>
   </div>
 </nav>
-
-<!-- FLOATING PILL CTA (mobile only) -->
-<a href="#waitlist" class="floating-pill" data-de="Für Betriebe →" data-en="For businesses →">
-  Für Betriebe →
-</a>
 
 <!-- HERO — split layout: copy left, phone mockup right -->
 <section class="hero">
