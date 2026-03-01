@@ -23,27 +23,24 @@ body {
   -webkit-font-smoothing: antialiased; overflow-x: hidden;
 }
 
-/* === NAV (Floating Pill) === */
+/* === NAV (sticky header) === */
 html { scroll-behavior: smooth; }
-section[id] { scroll-margin-top: 80px; }
+section[id] { scroll-margin-top: 72px; }
 .nav {
-  position:fixed; top:14px; left:50%; transform:translateX(-50%);
-  z-index:100; max-width:720px; width:calc(100% - 32px);
-  padding: 8px 8px 8px 20px;
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding: 14px 40px;
   display:flex; align-items:center;
-  background: rgba(250,248,245,0.85); backdrop-filter: blur(20px);
-  border: 1px solid rgba(226,222,212,0.5);
-  border-radius: 100px;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+  background: rgba(250,248,245,0.88); backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(226,222,212,0.4);
 }
 .nav-brand {
   font-family:'Plus Jakarta Sans',sans-serif;
-  font-weight:800; font-size:20px; letter-spacing:-1px;
+  font-weight:800; font-size:22px; letter-spacing:-1px;
   color:var(--forest); text-decoration:none; flex-shrink:0;
 }
 .nav-brand span { color:var(--sage-dim); }
 .nav-links {
-  display:flex; align-items:center; gap:20px;
+  display:flex; align-items:center; gap:24px;
   margin:0 auto; padding:0 16px;
 }
 .nav-links a {
@@ -51,25 +48,30 @@ section[id] { scroll-margin-top: 80px; }
   text-decoration:none; transition: color 0.2s; white-space:nowrap;
 }
 .nav-links a:hover { color:var(--forest); }
-.nav-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.nav-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
 .lang-toggle {
   display:flex; border:1px solid var(--sand-mid);
-  border-radius:100px; overflow:hidden; background:var(--sand-warm);
+  border-radius:8px; overflow:hidden; background:var(--sand-warm);
 }
 .lang-btn {
-  padding:4px 10px; font-size:11px; font-weight:600;
+  padding:6px 14px; font-size:12px; font-weight:600;
   border:none; background:transparent; color:var(--text-muted);
   cursor:pointer; transition:all 0.2s; font-family:'Outfit',sans-serif;
 }
 .lang-btn.active { background:var(--forest); color:var(--sand); }
 .nav-cta {
-  padding:7px 18px; border-radius:100px;
+  padding:8px 22px; border-radius:8px;
   background:var(--sage); color:var(--forest);
   font-family:'Plus Jakarta Sans',sans-serif;
-  font-weight:700; font-size:12px;
+  font-weight:700; font-size:13px;
   text-decoration:none; transition: opacity 0.2s; white-space:nowrap;
 }
 .nav-cta:hover { opacity:0.85; }
+
+/* === FLOATING PILL CTA (mobile only) === */
+.floating-pill {
+  display:none; /* hidden on desktop */
+}
 
 /* === HERO === */
 .hero {
@@ -537,9 +539,25 @@ section[id] { scroll-margin-top: 80px; }
   .sides-grid { grid-template-columns:1fr; }
 }
 @media (max-width:768px) {
-  .nav { padding:6px 6px 6px 16px; width:auto; max-width:calc(100% - 24px); gap:12px; }
+  .nav { padding:12px 20px; }
   .nav-links { display:none; }
+  .nav-cta { display:none; }
   .lang-toggle { display:none; }
+  .floating-pill {
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    z-index:100;
+    padding:12px 28px;
+    background:var(--sage); color:var(--forest);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-weight:700; font-size:14px;
+    text-decoration:none; white-space:nowrap;
+    border-radius:100px;
+    box-shadow: 0 4px 24px rgba(27,43,30,0.18);
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .floating-pill:hover { transform:translateX(-50%) translateY(-1px); opacity:0.9; }
+  .floating-pill svg { width:14px; height:14px; }
   .phone { width:240px; height:500px; border-radius:28px; }
   .phone-search { margin:0 12px 6px; padding:7px 10px; font-size:10px; }
   .phone-chips { padding:0 12px 6px; gap:4px; }
@@ -601,6 +619,11 @@ section[id] { scroll-margin-top: 80px; }
     <a href="#waitlist" class="nav-cta" data-de="Für Betriebe →" data-en="For businesses →">Für Betriebe →</a>
   </div>
 </nav>
+
+<!-- FLOATING PILL CTA (mobile only) -->
+<a href="#waitlist" class="floating-pill" data-de="Für Betriebe →" data-en="For businesses →">
+  Für Betriebe →
+</a>
 
 <!-- HERO — split layout: copy left, phone mockup right -->
 <section class="hero">
