@@ -23,37 +23,51 @@ body {
   -webkit-font-smoothing: antialiased; overflow-x: hidden;
 }
 
-/* === NAV === */
+/* === NAV (Floating Pill) === */
+html { scroll-behavior: smooth; }
+section[id] { scroll-margin-top: 80px; }
 .nav {
-  position:fixed; top:0; left:0; right:0; z-index:100;
-  padding: 14px 40px;
-  display:flex; justify-content:space-between; align-items:center;
-  background: rgba(250,248,245,0.88); backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(226,222,212,0.4);
+  position:fixed; top:14px; left:50%; transform:translateX(-50%);
+  z-index:100; max-width:720px; width:calc(100% - 32px);
+  padding: 8px 8px 8px 20px;
+  display:flex; align-items:center;
+  background: rgba(250,248,245,0.85); backdrop-filter: blur(20px);
+  border: 1px solid rgba(226,222,212,0.5);
+  border-radius: 100px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.04);
 }
 .nav-brand {
   font-family:'Plus Jakarta Sans',sans-serif;
-  font-weight:800; font-size:22px; letter-spacing:-1px;
-  color:var(--forest); text-decoration:none;
+  font-weight:800; font-size:20px; letter-spacing:-1px;
+  color:var(--forest); text-decoration:none; flex-shrink:0;
 }
 .nav-brand span { color:var(--sage-dim); }
-.nav-right { display:flex; align-items:center; gap:16px; }
+.nav-links {
+  display:flex; align-items:center; gap:20px;
+  margin:0 auto; padding:0 16px;
+}
+.nav-links a {
+  font-size:13px; font-weight:500; color:var(--text-secondary);
+  text-decoration:none; transition: color 0.2s; white-space:nowrap;
+}
+.nav-links a:hover { color:var(--forest); }
+.nav-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
 .lang-toggle {
   display:flex; border:1px solid var(--sand-mid);
-  border-radius:8px; overflow:hidden; background:var(--sand-warm);
+  border-radius:100px; overflow:hidden; background:var(--sand-warm);
 }
 .lang-btn {
-  padding:6px 14px; font-size:12px; font-weight:600;
+  padding:4px 10px; font-size:11px; font-weight:600;
   border:none; background:transparent; color:var(--text-muted);
   cursor:pointer; transition:all 0.2s; font-family:'Outfit',sans-serif;
 }
 .lang-btn.active { background:var(--forest); color:var(--sand); }
 .nav-cta {
-  padding:8px 22px; border-radius:8px;
+  padding:7px 18px; border-radius:100px;
   background:var(--sage); color:var(--forest);
   font-family:'Plus Jakarta Sans',sans-serif;
-  font-weight:700; font-size:13px;
-  text-decoration:none; transition: opacity 0.2s;
+  font-weight:700; font-size:12px;
+  text-decoration:none; transition: opacity 0.2s; white-space:nowrap;
 }
 .nav-cta:hover { opacity:0.85; }
 
@@ -523,8 +537,9 @@ body {
   .sides-grid { grid-template-columns:1fr; }
 }
 @media (max-width:768px) {
-  .nav { padding:12px 20px; }
-  .nav-cta { display:none; }
+  .nav { padding:8px 12px 8px 16px; max-width:calc(100% - 24px); }
+  .nav-links { display:none; }
+  .lang-toggle { display:none; }
   .phone { width:240px; height:500px; border-radius:28px; }
   .phone-search { margin:0 12px 6px; padding:7px 10px; font-size:10px; }
   .phone-chips { padding:0 12px 6px; gap:4px; }
@@ -572,12 +587,18 @@ body {
 <!-- NAV -->
 <nav class="nav">
   <a href="#" class="nav-brand">loo<span>qa</span></a>
+  <div class="nav-links">
+    <a href="#steps" data-de="So funktioniert's" data-en="How it works">So funktioniert's</a>
+    <a href="#proof" data-de="Vorteile" data-en="Benefits">Vorteile</a>
+    <a href="#demo" data-de="Demo" data-en="Demo">Demo</a>
+    <a href="#waitlist" data-de="Waitlist" data-en="Waitlist">Waitlist</a>
+  </div>
   <div class="nav-right">
     <div class="lang-toggle">
       <button class="lang-btn active" data-lang="de">DE</button>
       <button class="lang-btn" data-lang="en">EN</button>
     </div>
-    <a href="#" class="nav-cta" data-de="Für Betriebe" data-en="For businesses">Für Betriebe</a>
+    <a href="#waitlist" class="nav-cta" data-de="Für Betriebe →" data-en="For businesses →">Für Betriebe →</a>
   </div>
 </nav>
 
@@ -710,7 +731,7 @@ body {
 </section>
 
 <!-- HOW IT WORKS (für Betriebe) -->
-<section class="steps">
+<section class="steps" id="steps">
   <div class="steps-inner">
     <div class="steps-header">
       <div class="label" data-de="So funktioniert's" data-en="How it works">So funktioniert's</div>
@@ -737,7 +758,7 @@ body {
 </section>
 
 <!-- CHAT DEMO -->
-<section class="demo">
+<section class="demo" id="demo">
   <div class="demo-inner">
     <div class="demo-header">
       <div class="label" data-de="Live-Demo" data-en="Live demo">Live-Demo</div>
@@ -766,7 +787,7 @@ body {
 </section>
 
 <!-- PROOF / TRUST -->
-<section class="proof">
+<section class="proof" id="proof">
   <div class="proof-inner">
     <div class="proof-header">
       <div class="label" data-de="Warum looqa" data-en="Why looqa">Warum looqa</div>
