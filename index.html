@@ -4,389 +4,570 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>looqa — Dein Betrieb. Immer erreichbar.</title>
-<meta name="description" content="looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kundenfragen beantworten, Termine buchen, Bestellungen annehmen — automatisch, 24/7.">
+<meta name="description" content="looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kunden finden Betriebe in einer App, chatten sofort — und der Agent antwortet 24/7.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --forest: #1B2B1E;
-    --forest-mid: #2A3F2E;
-    --forest-light: #3A5340;
-    --sage: #7BC67E;
-    --sage-dim: #5EA661;
-    --sage-soft: #A8DBA8;
-    --sage-glow: rgba(123,198,126,0.08);
-    --sand: #FAF8F5;
-    --sand-warm: #F0EDE6;
-    --sand-mid: #E2DED4;
-    --text-primary: #1B2B1E;
-    --text-secondary: #5A6B5E;
-    --text-muted: #8A9A8E;
-  }
+:root {
+  --forest: #1B2B1E; --forest-mid: #2A3F2E; --forest-light: #3A5340;
+  --sage: #7BC67E; --sage-dim: #5EA661; --sage-soft: #A8DBA8;
+  --sage-glow: rgba(123,198,126,0.08); --sage-border: rgba(123,198,126,0.15);
+  --sand: #FAF8F5; --sand-warm: #F0EDE6; --sand-mid: #E2DED4;
+  --text-primary: #1B2B1E; --text-secondary: #5A6B5E; --text-muted: #8A9A8E;
+  --signal-green: #4A9A4E; --signal-red: #D94F3D; --signal-amber: #E5A832; --signal-blue: #3B82C4;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--sand); color: var(--text-primary);
+  font-family: 'Outfit', sans-serif; font-weight: 400; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* === NAV === */
+.nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding: 14px 40px;
+  display:flex; justify-content:space-between; align-items:center;
+  background: rgba(250,248,245,0.88); backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(226,222,212,0.4);
+}
+.nav-brand {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:22px; letter-spacing:-1px;
+  color:var(--forest); text-decoration:none;
+}
+.nav-brand span { color:var(--sage-dim); }
+.nav-right { display:flex; align-items:center; gap:16px; }
+.lang-toggle {
+  display:flex; border:1px solid var(--sand-mid);
+  border-radius:8px; overflow:hidden; background:var(--sand-warm);
+}
+.lang-btn {
+  padding:6px 14px; font-size:12px; font-weight:600;
+  border:none; background:transparent; color:var(--text-muted);
+  cursor:pointer; transition:all 0.2s; font-family:'Outfit',sans-serif;
+}
+.lang-btn.active { background:var(--forest); color:var(--sand); }
+.nav-cta {
+  padding:8px 22px; border-radius:8px;
+  background:var(--sage); color:var(--forest);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700; font-size:13px;
+  text-decoration:none; transition: opacity 0.2s;
+}
+.nav-cta:hover { opacity:0.85; }
 
-  body {
-    background: var(--sand);
-    color: var(--text-primary);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 400;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
+/* === HERO === */
+.hero {
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding: 120px 40px 80px; gap: 64px;
+  background: var(--forest); position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute;
+  top:-20%; right:-10%;
+  width:700px; height:700px;
+  background: radial-gradient(circle, rgba(123,198,126,0.06) 0%, transparent 60%);
+}
+.hero-left { flex:1; max-width:520px; position:relative; z-index:2; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 18px; border:1px solid var(--forest-light);
+  border-radius:100px; margin-bottom:28px;
+  font-family:'JetBrains Mono',monospace;
+}
+.hero-badge .dot { width:6px; height:6px; background:var(--sage); border-radius:50%; animation:pulse 2s infinite; }
+.hero-badge span { font-size:11px; color:var(--sage-soft); letter-spacing:0.5px; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.hero h1 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:clamp(36px,5.5vw,60px);
+  letter-spacing:-2px; line-height:1.05;
+  color:var(--sand); margin-bottom:20px;
+}
+.hero h1 .accent { color:var(--sage); }
+.hero .sub {
+  font-size:17px; color:var(--sage-soft); font-weight:300;
+  line-height:1.7; margin-bottom:32px; max-width:440px;
+}
+.hero-buttons { display:flex; gap:12px; flex-wrap:wrap; }
+.btn-primary {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 28px; border-radius:10px;
+  background:var(--sage); color:var(--forest);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700; font-size:15px;
+  text-decoration:none; transition: transform 0.2s, opacity 0.2s;
+}
+.btn-primary:hover { transform:translateY(-1px); opacity:0.9; }
+.btn-ghost {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 28px; border-radius:10px;
+  background:transparent; border:1px solid var(--forest-light);
+  color:var(--sage-soft);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:600; font-size:15px;
+  text-decoration:none; transition: border-color 0.2s;
+}
+.btn-ghost:hover { border-color:var(--sage); }
 
-  /* ========== NAV ========== */
-  .nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 14px 40px;
-    display: flex; justify-content: space-between; align-items: center;
-    background: rgba(250,248,245,0.85);
-    backdrop-filter: blur(24px);
-    border-bottom: 1px solid rgba(226,222,212,0.4);
-    transition: padding 0.3s;
-  }
-  .nav-brand {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 22px; letter-spacing: -1px;
-    color: var(--forest); text-decoration: none;
-  }
-  .nav-brand span { color: var(--sage-dim); }
-  .nav-right { display: flex; align-items: center; gap: 20px; }
-  .lang-toggle {
-    display: flex; gap: 0;
-    border: 1px solid var(--sand-mid); border-radius: 8px; overflow: hidden;
-    background: var(--sand-warm);
-  }
-  .lang-btn {
-    padding: 6px 14px; font-size: 12px; font-weight: 600;
-    border: none; background: transparent; color: var(--text-muted);
-    cursor: pointer; transition: all 0.2s;
-    font-family: 'Outfit', sans-serif;
-  }
-  .lang-btn.active {
-    background: var(--forest); color: var(--sand);
-  }
-  .nav-login {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 600; font-size: 13px;
-    color: var(--text-secondary);
-    text-decoration: none; transition: color 0.2s;
-  }
-  .nav-login:hover { color: var(--forest); }
-  .nav-cta {
-    padding: 8px 22px; border-radius: 8px;
-    background: var(--sage); color: var(--forest);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700; font-size: 13px;
-    text-decoration: none; transition: opacity 0.2s;
-  }
-  .nav-cta:hover { opacity: 0.85; }
+/* Phone mockup */
+.hero-right { position:relative; z-index:2; flex-shrink:0; }
+.phone {
+  width:280px; height:580px; border-radius:36px; overflow:hidden;
+  background:var(--sand); border:3px solid var(--forest-light);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+  position:relative;
+}
+.phone-status {
+  height:44px; padding:0 20px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  padding-bottom:4px;
+}
+.phone-status span { font-size:12px; font-weight:600; color:var(--forest); }
+.phone-content { padding:0; height:calc(100% - 44px); display:flex; flex-direction:column; }
+.phone-header {
+  padding:8px 16px 10px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.phone-header .wm { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:16px; letter-spacing:-0.5px; }
+.phone-header .loc { font-size:10px; color:var(--text-muted); display:flex; align-items:center; gap:3px; }
+.phone-search {
+  margin:0 16px 8px; padding:9px 12px;
+  background:var(--sand-warm); border-radius:8px; border:1px solid var(--sand-mid);
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:var(--text-muted);
+}
+.phone-chips { display:flex; gap:5px; padding:0 16px 8px; overflow:hidden; }
+.chip {
+  padding:4px 10px; border-radius:100px; font-size:10px; font-weight:600; white-space:nowrap;
+  display:flex; align-items:center; gap:4px;
+}
+.chip.active { background:var(--forest); color:var(--sand); }
+.chip.inactive { background:var(--sand-warm); color:var(--text-secondary); }
+.phone-list { flex:1; overflow:hidden; padding:4px 16px 0; display:flex; flex-direction:column; gap:8px; }
+.mini-card {
+  background:#fff; border:1px solid var(--sand-mid); border-radius:10px;
+  padding:10px 12px; display:flex; gap:10px; align-items:flex-start;
+  animation: cardIn 0.5s ease both;
+}
+.mini-card:nth-child(1) { animation-delay:0.3s; }
+.mini-card:nth-child(2) { animation-delay:0.5s; }
+.mini-card:nth-child(3) { animation-delay:0.7s; }
+@keyframes cardIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+.mc-icon {
+  width:32px; height:32px; border-radius:8px; flex-shrink:0;
+  background:var(--sage-glow); border:1px solid var(--sage-border);
+  display:flex; align-items:center; justify-content:center;
+}
+.mc-icon svg { width:14px; height:14px; }
+.mc-info { flex:1; min-width:0; }
+.mc-name { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:12px; color:var(--forest); letter-spacing:-0.2px; }
+.mc-cat { font-size:9px; color:var(--text-muted); }
+.mc-addr { font-size:9px; color:var(--text-secondary); margin-top:2px; display:flex; align-items:center; gap:3px; }
+.mc-dist { font-size:9px; color:var(--text-muted); flex-shrink:0; }
+.mc-status { display:flex; align-items:center; gap:3px; margin-top:3px; }
+.mc-status .dot { width:4px; height:4px; border-radius:2px; }
+.mc-status span { font-size:8px; font-weight:500; }
+.phone-tab-bar {
+  display:flex; border-top:1px solid var(--sand-mid); padding:6px 0 16px;
+  background:var(--sand); flex-shrink:0;
+}
+.phone-tab { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; }
+.phone-tab svg { width:16px; height:16px; }
+.phone-tab span { font-size:8px; font-weight:500; }
+.phone-home { position:absolute; bottom:5px; left:50%; transform:translateX(-50%); width:100px; height:4px; background:var(--forest-mid); border-radius:2px; opacity:0.2; }
 
-  /* ========== HERO ========== */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    text-align: center; padding: 120px 32px 80px;
-    background: var(--forest); position: relative; overflow: hidden;
-  }
-  .hero::before {
-    content: ''; position: absolute;
-    top: -30%; left: 50%; transform: translateX(-50%);
-    width: 900px; height: 900px;
-    background: radial-gradient(circle, rgba(123,198,126,0.07) 0%, transparent 65%);
-  }
-  .hero::after {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-    height: 200px;
-    background: linear-gradient(to top, rgba(27,43,30,1), transparent);
-  }
-  .hero-content { position: relative; z-index: 2; }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 7px 18px; border: 1px solid var(--forest-light);
-    border-radius: 100px; margin-bottom: 32px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; color: var(--sage-soft); letter-spacing: 0.5px;
-  }
-  .hero-badge .dot {
-    width: 6px; height: 6px; background: var(--sage);
-    border-radius: 50%; animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+/* === PROBLEM === */
+.problem { padding:100px 32px; text-align:center; }
+.problem-inner { max-width:640px; margin:0 auto; }
+.problem h2 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:32px; letter-spacing:-1px;
+  margin-bottom:20px; line-height:1.15;
+}
+.problem p { font-size:16px; color:var(--text-secondary); font-weight:300; line-height:1.8; }
+.problem-stats { display:flex; justify-content:center; gap:48px; margin-top:40px; }
+.stat { text-align:center; }
+.stat-number {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:36px; letter-spacing:-1.5px; color:var(--sage-dim);
+}
+.stat-label { font-size:13px; color:var(--text-muted); margin-top:4px; }
 
-  .hero h1 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800;
-    font-size: clamp(40px, 7vw, 72px);
-    letter-spacing: -2.5px; line-height: 1.05;
-    color: var(--sand); margin-bottom: 20px;
-    max-width: 700px;
-  }
-  .hero h1 .accent { color: var(--sage); }
-  .hero .sub {
-    font-size: 17px; color: var(--sage-soft);
-    font-weight: 300; line-height: 1.7;
-    max-width: 480px; margin: 0 auto 36px;
-  }
-  .hero-cta {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 14px 32px; border-radius: 10px;
-    background: var(--sage); color: var(--forest);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700; font-size: 15px;
-    text-decoration: none; transition: transform 0.2s, opacity 0.2s;
-  }
-  .hero-cta:hover { transform: translateY(-1px); opacity: 0.9; }
-  .hero-cta svg { width: 16px; height: 16px; }
+/* === ZWEI SEITEN === */
+.sides { padding:100px 32px; background:var(--forest); }
+.sides-inner { max-width:960px; margin:0 auto; }
+.sides-header { text-align:center; margin-bottom:56px; }
+.sides-header .label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; color:var(--sage); letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:12px;
+}
+.sides-header h2 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:32px; letter-spacing:-1px; color:var(--sand);
+}
+.sides-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.side-card {
+  background:var(--forest-mid); border:1px solid var(--forest-light);
+  border-radius:16px; padding:36px 28px;
+  transition: border-color 0.3s;
+}
+.side-card:hover { border-color:var(--sage); }
+.side-icon {
+  width:48px; height:48px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:20px;
+}
+.side-icon.biz { background:rgba(123,198,126,0.12); }
+.side-icon.cust { background:rgba(123,198,126,0.06); border:1px solid rgba(123,198,126,0.12); }
+.side-icon svg { width:22px; height:22px; }
+.side-card h3 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700; font-size:20px; color:var(--sand); margin-bottom:10px; letter-spacing:-0.3px;
+}
+.side-card p { font-size:14px; color:var(--sage-soft); font-weight:300; line-height:1.7; margin-bottom:16px; }
+.side-feats { display:flex; flex-direction:column; gap:8px; }
+.sf {
+  display:flex; align-items:center; gap:10px;
+  font-size:13px; color:var(--sage-soft); font-weight:400;
+}
+.sf svg { width:16px; height:16px; flex-shrink:0; }
 
-  .hero-visual {
-    position: relative; z-index: 2;
-    margin-top: 56px;
-    background: var(--forest-mid);
-    border: 1px solid var(--forest-light);
-    border-radius: 16px;
-    padding: 24px;
-    max-width: 420px; width: 100%;
-  }
-  .hv-header {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
-  }
-  .hv-avatar {
-    width: 32px; height: 32px; border-radius: 10px;
-    background: var(--sage); display: flex; align-items: center; justify-content: center;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 11px; color: var(--forest);
-  }
-  .hv-name {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700; font-size: 14px; color: var(--sand);
-  }
-  .hv-via {
-    font-size: 11px; color: var(--forest-light); font-weight: 400;
-  }
-  .hv-status {
-    margin-left: auto; display: flex; align-items: center; gap: 5px;
-    font-size: 10px; color: var(--sage);
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .hv-status .dot { width: 5px; height: 5px; background: var(--sage); border-radius: 50%; }
-  .chat-demo { display: flex; flex-direction: column; gap: 8px; }
-  .chat-bub {
-    padding: 10px 14px; border-radius: 12px;
-    font-size: 13px; line-height: 1.5; max-width: 88%;
-    animation: fadeUp 0.5s ease both;
-  }
-  .chat-bub:nth-child(1) { animation-delay: 0.3s; }
-  .chat-bub:nth-child(2) { animation-delay: 1s; }
-  .chat-bub:nth-child(3) { animation-delay: 1.8s; }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .chat-bub.user {
-    background: rgba(250,248,245,0.1); color: var(--sand);
-    align-self: flex-end; border-bottom-right-radius: 4px;
-  }
-  .chat-bub.agent {
-    background: var(--sage-glow); border: 1px solid rgba(123,198,126,0.12);
-    color: var(--sand); align-self: flex-start; border-bottom-left-radius: 4px;
-  }
+/* === STEPS === */
+.steps { padding:100px 32px; }
+.steps-inner { max-width:960px; margin:0 auto; }
+.steps-header { text-align:center; margin-bottom:56px; }
+.steps-header .label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; color:var(--sage-dim); letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:12px;
+}
+.steps-header h2 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:32px; letter-spacing:-1px;
+}
+.steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.step-card {
+  background:#fff; border:1px solid var(--sand-mid);
+  border-radius:16px; padding:32px 24px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.step-card:hover { border-color:var(--sage); box-shadow:0 4px 24px var(--sage-glow); }
+.step-num {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:40px; color:var(--sage-dim);
+  letter-spacing:-2px; margin-bottom:16px; line-height:1;
+}
+.step-card h3 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700; font-size:18px; margin-bottom:8px;
+}
+.step-card p { font-size:14px; color:var(--text-secondary); font-weight:300; line-height:1.6; }
 
-  /* ========== PROBLEM ========== */
-  .problem {
-    padding: 100px 32px;
-    text-align: center;
-  }
-  .problem-inner { max-width: 640px; margin: 0 auto; }
-  .problem h2 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 32px; letter-spacing: -1px;
-    margin-bottom: 20px; line-height: 1.15;
-  }
-  .problem p {
-    font-size: 16px; color: var(--text-secondary);
-    font-weight: 300; line-height: 1.8;
-  }
-  .problem-stats {
-    display: flex; justify-content: center; gap: 48px;
-    margin-top: 40px;
-  }
-  .stat {
-    text-align: center;
-  }
-  .stat-number {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 36px; letter-spacing: -1.5px;
-    color: var(--sage-dim);
-  }
-  .stat-label {
-    font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: 400;
-  }
+/* === CHAT DEMO === */
+.demo { padding:100px 32px; background:var(--forest); }
+.demo-inner { max-width:720px; margin:0 auto; text-align:center; }
+.demo-header { margin-bottom:48px; }
+.demo-header .label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; color:var(--sage); letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:12px;
+}
+.demo-header h2 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:32px; letter-spacing:-1px; color:var(--sand);
+}
+.demo-chat {
+  max-width:440px; margin:0 auto;
+  background:var(--forest-mid); border:1px solid var(--forest-light);
+  border-radius:16px; padding:20px; text-align:left;
+}
+.dc-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:16px;
+  padding-bottom:12px; border-bottom:1px solid var(--forest-light);
+}
+.dc-avatar {
+  width:32px; height:32px; border-radius:10px;
+  background:var(--sage); display:flex; align-items:center; justify-content:center;
+}
+.dc-avatar svg { width:16px; height:16px; }
+.dc-name { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:14px; color:var(--sand); }
+.dc-via { font-size:10px; color:var(--forest-light); }
+.dc-status { margin-left:auto; display:flex; align-items:center; gap:4px; }
+.dc-status .dot { width:5px; height:5px; background:var(--sage); border-radius:50%; }
+.dc-status span { font-size:9px; color:var(--sage); font-family:'JetBrains Mono',monospace; }
+.demo-msgs { display:flex; flex-direction:column; gap:8px; }
+.dm {
+  padding:10px 14px; border-radius:12px;
+  font-size:13px; line-height:1.5; max-width:85%;
+  opacity:0; animation: msgIn 0.4s ease forwards;
+}
+.dm.user {
+  background:rgba(250,248,245,0.08); color:var(--sand);
+  align-self:flex-end; border-bottom-right-radius:4px;
+}
+.dm.agent {
+  background:var(--sage-glow); border:1px solid rgba(123,198,126,0.1);
+  color:var(--sand); align-self:flex-start; border-bottom-left-radius:4px;
+}
+.dm:nth-child(1) { animation-delay:0.5s; }
+.dm:nth-child(2) { animation-delay:1.6s; }
+.dm:nth-child(3) { animation-delay:2.8s; }
+.dm:nth-child(4) { animation-delay:3.8s; }
+@keyframes msgIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+.dm-tag {
+  font-size:9px; color:var(--forest-light); font-family:'JetBrains Mono',monospace;
+  margin-top:3px; margin-left:4px; letter-spacing:0.3px;
+  opacity:0; animation: msgIn 0.3s ease forwards;
+}
+.dm-tag.t1 { animation-delay:2s; }
+.dm-tag.t2 { animation-delay:4.2s; }
+.demo-input {
+  display:flex; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid var(--forest-light);
+}
+.demo-input-field {
+  flex:1; padding:9px 14px; border-radius:10px;
+  background:rgba(250,248,245,0.05); border:1px solid var(--forest-light);
+  font-size:12px; color:var(--forest-light); font-family:'Outfit',sans-serif;
+}
+.demo-input-btn {
+  width:36px; height:36px; border-radius:10px;
+  background:var(--sage); border:none;
+  display:flex; align-items:center; justify-content:center;
+  cursor:default;
+}
+.demo-input-btn svg { width:14px; height:14px; }
 
-  /* ========== HOW IT WORKS ========== */
-  .steps {
-    padding: 100px 32px;
-    background: var(--forest);
-  }
-  .steps-inner { max-width: 960px; margin: 0 auto; }
-  .steps-header {
-    text-align: center; margin-bottom: 64px;
-  }
-  .steps-header .label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; color: var(--sage); letter-spacing: 2px;
-    text-transform: uppercase; margin-bottom: 12px;
-  }
-  .steps-header h2 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 32px; letter-spacing: -1px;
-    color: var(--sand);
-  }
-  .steps-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-  }
-  .step-card {
-    background: var(--forest-mid);
-    border: 1px solid var(--forest-light);
-    border-radius: 16px; padding: 32px 24px;
-    transition: border-color 0.3s;
-  }
-  .step-card:hover { border-color: var(--sage); }
-  .step-num {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 40px; color: var(--sage);
-    letter-spacing: -2px; margin-bottom: 16px; line-height: 1;
-  }
-  .step-card h3 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700; font-size: 18px; color: var(--sand);
-    margin-bottom: 8px;
-  }
-  .step-card p {
-    font-size: 14px; color: var(--sage-soft); font-weight: 300;
-    line-height: 1.6;
-  }
+/* === PROOF === */
+.proof { padding:100px 32px; }
+.proof-inner { max-width:960px; margin:0 auto; }
+.proof-header { text-align:center; margin-bottom:48px; }
+.proof-header .label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; color:var(--sage-dim); letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:12px;
+}
+.proof-header h2 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:32px; letter-spacing:-1px;
+}
+.proof-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.proof-card {
+  background:#fff; border:1px solid var(--sand-mid); border-radius:16px;
+  padding:32px 24px; position:relative; overflow:hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.proof-card:hover { border-color:var(--sage); box-shadow:0 4px 24px var(--sage-glow); }
+.proof-icon {
+  width:44px; height:44px; border-radius:12px;
+  background:var(--sage-glow); border:1px solid var(--sage-border);
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:16px;
+}
+.proof-icon svg { width:20px; height:20px; }
+.proof-card h3 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700; font-size:18px; letter-spacing:-0.3px; margin-bottom:8px;
+}
+.proof-card p { font-size:14px; color:var(--text-secondary); font-weight:300; line-height:1.6; }
 
-  /* ========== FEATURES ========== */
-  .features {
-    padding: 100px 32px;
-  }
-  .features-inner { max-width: 960px; margin: 0 auto; }
-  .features-header {
-    text-align: center; margin-bottom: 56px;
-  }
-  .features-header .label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; color: var(--sage-dim); letter-spacing: 2px;
-    text-transform: uppercase; margin-bottom: 12px;
-  }
-  .features-header h2 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 32px; letter-spacing: -1px;
-  }
-  .feature-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
-  }
-  .feature-card {
-    background: #FFFFFF;
-    border: 1px solid var(--sand-mid);
-    border-radius: 16px; padding: 32px 28px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  .feature-card:hover {
-    border-color: var(--sage);
-    box-shadow: 0 4px 24px var(--sage-glow);
-  }
-  .feature-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    background: var(--sage-glow);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 16px; font-size: 18px;
-  }
-  .feature-card h3 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700; font-size: 17px; margin-bottom: 8px;
-  }
-  .feature-card p {
-    font-size: 14px; color: var(--text-secondary); font-weight: 300; line-height: 1.6;
-  }
+/* === WAITLIST === */
+.waitlist { padding:100px 32px; }
+.waitlist-inner {
+  max-width:580px; margin:0 auto; text-align:center;
+}
+.waitlist-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 16px; border-radius:100px;
+  background:var(--sage-glow); border:1px solid var(--sage-border);
+  margin-bottom:24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; color:var(--sage-dim); letter-spacing:0.5px;
+}
+.waitlist-badge .dot {
+  width:6px; height:6px; background:var(--sage-dim);
+  border-radius:50%; animation:pulse 2s infinite;
+}
+.waitlist h2 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:36px; letter-spacing:-1.5px;
+  margin-bottom:12px; line-height:1.1;
+}
+.waitlist h2 .accent { color:var(--sage-dim); }
+.waitlist .waitlist-sub {
+  font-size:16px; color:var(--text-secondary); font-weight:300;
+  max-width:420px; margin:0 auto 36px; line-height:1.7;
+}
+.waitlist-form {
+  background:var(--white, #fff); border:1px solid var(--sand-mid);
+  border-radius:16px; padding:28px; text-align:left;
+}
+.wf-row { display:flex; gap:10px; margin-bottom:10px; }
+.wf-row.full { flex-direction:column; }
+.wf-input {
+  flex:1; padding:13px 16px; border-radius:10px;
+  border:1px solid var(--sand-mid); background:var(--sand-warm);
+  font-family:'Outfit',sans-serif; font-size:14px; color:var(--text-primary);
+  outline:none; transition: border-color 0.2s;
+}
+.wf-input:focus { border-color:var(--sage); }
+.wf-input::placeholder { color:var(--text-muted); }
+.wf-role-row { display:flex; gap:8px; margin-bottom:16px; }
+.wf-role {
+  flex:1; padding:12px 16px; border-radius:10px;
+  border:1px solid var(--sand-mid); background:var(--sand);
+  font-family:'Outfit',sans-serif; font-size:13px; font-weight:500;
+  color:var(--text-secondary); text-align:center;
+  cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.wf-role:hover { border-color:var(--sage-dim); }
+.wf-role.active {
+  background:var(--sage-glow); border-color:var(--sage);
+  color:var(--forest); font-weight:600;
+}
+.wf-role svg { width:16px; height:16px; flex-shrink:0; }
+.wf-role.active svg { stroke:var(--sage-dim); }
+.wf-submit {
+  width:100%; padding:14px; border-radius:10px;
+  background:var(--sage); color:var(--forest);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700; font-size:15px;
+  border:none; cursor:pointer; transition: opacity 0.2s, transform 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.wf-submit:hover { opacity:0.9; transform:translateY(-1px); }
+.wf-submit:disabled { opacity:0.5; cursor:default; transform:none; }
+.wf-note {
+  text-align:center; margin-top:14px;
+  font-size:12px; color:var(--text-muted); font-weight:300;
+}
+.wf-success {
+  display:none; text-align:center; padding:20px 0;
+}
+.wf-success.show { display:block; }
+.wf-success-icon {
+  width:56px; height:56px; border-radius:16px;
+  background:var(--sage-glow); border:1px solid var(--sage-border);
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-bottom:16px;
+}
+.wf-success-icon svg { width:28px; height:28px; stroke:var(--sage-dim); }
+.wf-success h3 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700; font-size:20px; margin-bottom:6px; color:var(--forest);
+}
+.wf-success p { font-size:14px; color:var(--text-secondary); font-weight:300; line-height:1.6; }
+.wf-counter {
+  display:inline-flex; align-items:center; gap:6px;
+  margin-top:28px; padding:8px 16px; border-radius:100px;
+  background:var(--sand-warm); border:1px solid var(--sand-mid);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; color:var(--text-muted); letter-spacing:0.3px;
+}
 
-  /* ========== SOCIAL PROOF ========== */
-  .proof {
-    padding: 80px 32px;
-    text-align: center;
-  }
-  .proof-card {
-    max-width: 560px; margin: 0 auto;
-    background: var(--forest); border-radius: 16px;
-    padding: 40px 36px; color: var(--sand);
-  }
-  .proof-card .location-pin { font-size: 28px; margin-bottom: 16px; }
-  .proof-card h3 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 22px; letter-spacing: -0.5px;
-    margin-bottom: 10px;
-  }
-  .proof-card p {
-    font-size: 14px; color: var(--sage-soft); font-weight: 300; line-height: 1.7;
-  }
+/* === FINAL CTA === */
+.final-cta { padding:100px 32px; text-align:center; }
+.final-cta h2 {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:36px; letter-spacing:-1.5px;
+  margin-bottom:16px; line-height:1.1;
+}
+.final-cta h2 .accent { color:var(--sage-dim); }
+.final-cta p {
+  font-size:16px; color:var(--text-secondary); font-weight:300;
+  max-width:420px; margin:0 auto 28px; line-height:1.7;
+}
+.cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.btn-dark {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 32px; border-radius:10px;
+  background:var(--forest); color:var(--sand);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700; font-size:15px;
+  text-decoration:none; transition: transform 0.2s, opacity 0.2s;
+}
+.btn-dark:hover { transform:translateY(-1px); opacity:0.9; }
+.btn-outline {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 32px; border-radius:10px;
+  background:transparent; border:1px solid var(--sand-mid); color:var(--forest);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:600; font-size:15px;
+  text-decoration:none; transition: border-color 0.2s;
+}
+.btn-outline:hover { border-color:var(--sage); }
 
-  /* ========== FINAL CTA ========== */
-  .final-cta {
-    padding: 100px 32px;
-    text-align: center;
-  }
-  .final-cta h2 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 36px; letter-spacing: -1.5px;
-    margin-bottom: 16px; line-height: 1.1;
-  }
-  .final-cta h2 .accent { color: var(--sage-dim); }
-  .final-cta p {
-    font-size: 16px; color: var(--text-secondary); font-weight: 300;
-    max-width: 420px; margin: 0 auto 28px; line-height: 1.7;
-  }
-  .final-cta-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 14px 36px; border-radius: 10px;
-    background: var(--forest); color: var(--sand);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700; font-size: 15px;
-    text-decoration: none; transition: transform 0.2s, opacity 0.2s;
-  }
-  .final-cta-btn:hover { transform: translateY(-1px); opacity: 0.9; }
+/* === FOOTER === */
+.footer {
+  padding:40px 32px; border-top:1px solid var(--sand-mid);
+  display:flex; justify-content:space-between; align-items:center;
+  max-width:960px; margin:0 auto;
+}
+.footer-brand {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800; font-size:16px; letter-spacing:-0.5px; color:var(--forest);
+}
+.footer-brand span { color:var(--sage-dim); }
+.footer-text { font-size:12px; color:var(--text-muted); }
 
-  /* ========== FOOTER ========== */
-  .footer {
-    padding: 40px 32px;
-    border-top: 1px solid var(--sand-mid);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 960px; margin: 0 auto;
-  }
-  .footer-brand {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800; font-size: 16px; letter-spacing: -0.5px;
-    color: var(--forest);
-  }
-  .footer-brand span { color: var(--sage-dim); }
-  .footer-text {
-    font-size: 12px; color: var(--text-muted);
-  }
-
-  /* ========== RESPONSIVE ========== */
-  @media (max-width: 768px) {
-    .nav { padding: 12px 20px; }
-    .nav-cta { display: none; }
-    section, .problem, .steps, .features, .proof, .final-cta { padding: 64px 20px; }
-    .steps-grid, .feature-grid { grid-template-columns: 1fr; }
-    .problem-stats { flex-direction: column; gap: 24px; }
-    .hero h1 { letter-spacing: -1.5px; }
-    .hero-visual { margin-left: 20px; margin-right: 20px; }
-    .footer { flex-direction: column; gap: 8px; text-align: center; }
-  }
+/* === RESPONSIVE === */
+@media (max-width:960px) {
+  .hero { flex-direction:column; text-align:center; padding:120px 24px 60px; gap:40px; }
+  .hero-left { max-width:100%; }
+  .hero .sub { margin-left:auto; margin-right:auto; }
+  .hero-buttons { justify-content:center; }
+  .sides-grid { grid-template-columns:1fr; }
+}
+@media (max-width:768px) {
+  .nav { padding:12px 20px; }
+  .nav-cta { display:none; }
+  .phone { width:240px; height:500px; border-radius:28px; }
+  .phone-search { margin:0 12px 6px; padding:7px 10px; font-size:10px; }
+  .phone-chips { padding:0 12px 6px; gap:4px; }
+  .chip { padding:3px 8px; font-size:9px; }
+  .phone-list { padding:2px 12px 0; gap:6px; }
+  .mini-card { padding:8px 10px; gap:8px; }
+  .mc-icon { width:26px; height:26px; border-radius:6px; }
+  .mc-icon svg { width:11px; height:11px; }
+  .mc-name { font-size:10px; }
+  .mc-cat, .mc-addr, .mc-dist { font-size:8px; }
+  .problem, .steps, .demo, .sides, .proof, .final-cta, .waitlist { padding:64px 20px; }
+  .steps-grid, .proof-grid { grid-template-columns:1fr; }
+  .problem-stats { flex-direction:column; gap:24px; }
+  .footer { flex-direction:column; gap:8px; text-align:center; }
+  .wf-row { flex-direction:column; }
+  .wf-role-row { flex-direction:column; }
+}
 </style>
 </head>
 <body>
+
+<!-- Lucide SVG icon defs (2px stroke, round caps/joins) -->
+<svg style="display:none">
+  <symbol id="i-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/></symbol>
+  <symbol id="i-utensils" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"/><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Z"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-stethoscope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="i-msgcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-mappin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></symbol>
+  <symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/></symbol>
+</svg>
 
 <!-- NAV -->
 <nav class="nav">
@@ -396,36 +577,87 @@
       <button class="lang-btn active" data-lang="de">DE</button>
       <button class="lang-btn" data-lang="en">EN</button>
     </div>
-    <a href="https://app.looqa.de/login" class="nav-login" data-de="Login" data-en="Log in">Login</a>
-    <a href="https://app.looqa.de/onboarding/step1" class="nav-cta" data-de="Jetzt starten" data-en="Get started">Jetzt starten</a>
+    <a href="#" class="nav-cta" data-de="Für Betriebe" data-en="For businesses">Für Betriebe</a>
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- HERO — split layout: copy left, phone mockup right -->
 <section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge"><span class="dot"></span><span data-de="Jetzt in Entwicklung" data-en="Now in development">Jetzt in Entwicklung</span></div>
-    <h1 data-de='Dein Betrieb.<br>Immer <span class="accent">erreichbar.</span>' data-en='Your business.<br>Always <span class="accent">open.</span>'>Dein Betrieb.<br>Immer <span class="accent">erreichbar.</span></h1>
-    <p class="sub" data-de="looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kundenfragen beantworten, Termine buchen, Bestellungen annehmen — automatisch, 24/7." data-en="looqa gives every local business its own AI agent. Answer customer questions, book appointments, take orders — automatically, 24/7.">looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kundenfragen beantworten, Termine buchen, Bestellungen annehmen — automatisch, 24/7.</p>
-    <a href="https://app.looqa.de/onboarding/step1" class="hero-cta">
-      <span data-de="Kostenlos starten" data-en="Start for free">Kostenlos starten</span>
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-    </a>
+  <div class="hero-left">
+    <div class="hero-badge"><span class="dot"></span><span data-de="Bald verfügbar" data-en="Coming soon">Bald verfügbar</span></div>
+    <h1 data-de='Dein Betrieb.<br>Immer <span class="accent">erreichbar.</span>' data-en='Your business.<br>Always <span class="accent">reachable.</span>'>Dein Betrieb.<br>Immer <span class="accent">erreichbar.</span></h1>
+    <p class="sub" data-de="looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kunden finden dich in einer App, chatten sofort — und dein Agent antwortet 24/7." data-en="looqa gives every local business its own AI agent. Customers find you in one app, chat instantly — and your agent replies 24/7.">looqa gibt jedem lokalen Betrieb einen eigenen AI-Agent. Kunden finden dich in einer App, chatten sofort — und dein Agent antwortet 24/7.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn-primary">
+        <span data-de="Betrieb anmelden" data-en="Register your business">Betrieb anmelden</span>
+        <svg width="16" height="16"><use href="#i-arrow"/></svg>
+      </a>
+      <a href="#waitlist" class="btn-ghost">
+        <svg width="16" height="16" style="stroke:var(--sage-soft)"><use href="#i-bell"/></svg>
+        <span data-de="Auf die Waitlist" data-en="Join the waitlist">Auf die Waitlist</span>
+      </a>
+    </div>
+  </div>
 
-    <div class="hero-visual">
-      <div class="hv-header">
-        <div class="hv-avatar">SA</div>
-        <div>
-          <div class="hv-name">Salon Anna</div>
-          <div class="hv-via">via loo<span style="color:var(--sage);">qa</span></div>
+  <!-- Phone mockup showing Discovery screen -->
+  <div class="hero-right">
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><span></span></div>
+      <div class="phone-content">
+        <div class="phone-header">
+          <div class="wm"><span style="color:var(--forest)">loo</span><span style="color:var(--sage-dim)">qa</span></div>
+          <div class="loc"><svg width="10" height="10" style="stroke:var(--text-muted)"><use href="#i-mappin"/></svg> Mein Standort</div>
         </div>
-        <div class="hv-status"><span class="dot"></span> Online</div>
+        <div class="phone-search">
+          <svg width="12" height="12" style="stroke:var(--text-muted)"><use href="#i-search"/></svg>
+          <span data-de="Betrieb suchen..." data-en="Find a business...">Betrieb suchen...</span>
+        </div>
+        <div class="phone-chips">
+          <div class="chip active"><span data-de="Alle" data-en="All">Alle</span></div>
+          <div class="chip inactive"><svg width="10" height="10" style="stroke:var(--text-muted)"><use href="#i-scissors"/></svg><span data-de="Friseur" data-en="Hair">Friseur</span></div>
+          <div class="chip inactive"><svg width="10" height="10" style="stroke:var(--text-muted)"><use href="#i-utensils"/></svg><span>Restaurant</span></div>
+          <div class="chip inactive"><svg width="10" height="10" style="stroke:var(--text-muted)"><use href="#i-stethoscope"/></svg><span>Arzt</span></div>
+        </div>
+        <div class="phone-list">
+          <div class="mini-card">
+            <div class="mc-icon"><svg style="stroke:var(--sage-dim)"><use href="#i-scissors"/></svg></div>
+            <div class="mc-info">
+              <div class="mc-name">Salon Anna</div>
+              <div class="mc-cat" data-de="Friseur" data-en="Hair Salon">Friseur</div>
+              <div class="mc-addr"><svg width="9" height="9" style="stroke:var(--text-muted)"><use href="#i-mappin"/></svg> Hauptstr. 123</div>
+              <div class="mc-status"><div class="dot" style="background:var(--sage)"></div><span style="color:var(--sage)" data-de="Geöffnet" data-en="Open">Geöffnet</span></div>
+            </div>
+            <div class="mc-dist">350m</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-icon"><svg style="stroke:var(--sage-dim)"><use href="#i-utensils"/></svg></div>
+            <div class="mc-info">
+              <div class="mc-name">Pizzeria Da Luigi</div>
+              <div class="mc-cat">Restaurant</div>
+              <div class="mc-addr"><svg width="9" height="9" style="stroke:var(--text-muted)"><use href="#i-mappin"/></svg> Klarastr. 45</div>
+              <div class="mc-status"><div class="dot" style="background:var(--sage)"></div><span style="color:var(--sage)" data-de="Geöffnet" data-en="Open">Geöffnet</span></div>
+            </div>
+            <div class="mc-dist">500m</div>
+          </div>
+          <div class="mini-card">
+            <div class="mc-icon"><svg style="stroke:var(--sage-dim)"><use href="#i-stethoscope"/></svg></div>
+            <div class="mc-info">
+              <div class="mc-name">Dr. Weber</div>
+              <div class="mc-cat" data-de="Arztpraxis" data-en="Doctor">Arztpraxis</div>
+              <div class="mc-addr"><svg width="9" height="9" style="stroke:var(--text-muted)"><use href="#i-mappin"/></svg> Alfredstr. 78</div>
+              <div class="mc-status"><div class="dot" style="background:var(--signal-red)"></div><span style="color:var(--signal-red)" data-de="Geschlossen" data-en="Closed">Geschlossen</span></div>
+            </div>
+            <div class="mc-dist">800m</div>
+          </div>
+        </div>
+        <div class="phone-tab-bar">
+          <div class="phone-tab active"><svg style="stroke:var(--sage-dim)"><use href="#i-compass"/></svg><span style="color:var(--sage-dim)" data-de="Entdecken" data-en="Discover">Entdecken</span></div>
+          <div class="phone-tab inactive"><svg style="stroke:var(--text-muted)"><use href="#i-msgcircle"/></svg><span>Chats</span></div>
+          <div class="phone-tab inactive"><svg style="stroke:var(--text-muted)"><use href="#i-calendar"/></svg><span data-de="Termine" data-en="Bookings">Termine</span></div>
+          <div class="phone-tab inactive"><svg style="stroke:var(--text-muted)"><use href="#i-user"/></svg><span data-de="Profil" data-en="Profile">Profil</span></div>
+        </div>
       </div>
-      <div class="chat-demo">
-        <div class="chat-bub user" data-de="Habt ihr Samstag noch Platz?" data-en="Do you have availability on Saturday?">Habt ihr Samstag noch Platz?</div>
-        <div class="chat-bub agent" data-de="Samstag um 11 oder 15 Uhr wäre noch frei bei Lisa. Soll ich direkt buchen?" data-en="Saturday at 11am or 3pm is available with Lisa. Want me to book it?">Samstag um 11 oder 15 Uhr wäre noch frei bei Lisa. Soll ich direkt buchen?</div>
-        <div class="chat-bub user" data-de="15 Uhr bitte!" data-en="3pm please!">15 Uhr bitte!</div>
-      </div>
+      <div class="phone-home"></div>
     </div>
   </div>
 </section>
@@ -433,26 +665,51 @@
 <!-- PROBLEM -->
 <section class="problem">
   <div class="problem-inner">
-    <h2 data-de='Lokale Betriebe verlieren jeden Tag Kunden.' data-en='Local businesses lose customers every day.'>Lokale Betriebe verlieren jeden Tag Kunden.</h2>
-    <p data-de="Verpasste Anrufe. Keine Online-Buchung. Kunden die zur Konkurrenz gehen weil niemand antwortet. Dein Betrieb ist gut — aber nicht immer erreichbar." data-en="Missed calls. No online booking. Customers going to competitors because no one answers. Your business is great — just not always reachable.">Verpasste Anrufe. Keine Online-Buchung. Kunden die zur Konkurrenz gehen weil niemand antwortet. Dein Betrieb ist gut — aber nicht immer erreichbar.</p>
+    <h2 data-de="Lokale Betriebe verlieren jeden Tag Kunden." data-en="Local businesses lose customers every day.">Lokale Betriebe verlieren jeden Tag Kunden.</h2>
+    <p data-de="Verpasste Anrufe. Keine Online-Buchung. Kunden die zur Konkurrenz gehen weil niemand antwortet. Dein Betrieb ist gut — aber nicht immer erreichbar." data-en="Missed calls. No online booking. Customers switching to competitors because no one answers. Your business is great — just not always reachable.">Verpasste Anrufe. Keine Online-Buchung. Kunden die zur Konkurrenz gehen weil niemand antwortet. Dein Betrieb ist gut — aber nicht immer erreichbar.</p>
     <div class="problem-stats">
-      <div class="stat">
-        <div class="stat-number">62%</div>
-        <div class="stat-label" data-de="der Anrufe werden verpasst" data-en="of calls go unanswered">der Anrufe werden verpasst</div>
+      <div class="stat"><div class="stat-number">62%</div><div class="stat-label" data-de="der Anrufe werden verpasst" data-en="of calls go unanswered">der Anrufe werden verpasst</div></div>
+      <div class="stat"><div class="stat-number">78%</div><div class="stat-label" data-de="buchen lieber online" data-en="prefer to book online">buchen lieber online</div></div>
+      <div class="stat"><div class="stat-number">5 min</div><div class="stat-label" data-de="bis dein Agent live ist" data-en="until your agent is live">bis dein Agent live ist</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ZWEI SEITEN — Business + Customer -->
+<section class="sides">
+  <div class="sides-inner">
+    <div class="sides-header">
+      <div class="label" data-de="Zwei Seiten, ein Produkt" data-en="Two sides, one product">Zwei Seiten, ein Produkt</div>
+      <h2 data-de="Für Betriebe und Kunden." data-en="For businesses and customers.">Für Betriebe und Kunden.</h2>
+    </div>
+    <div class="sides-grid">
+      <div class="side-card">
+        <div class="side-icon biz"><svg style="stroke:var(--sage)"><use href="#i-store"/></svg></div>
+        <h3 data-de="Für deinen Betrieb" data-en="For your business">Für deinen Betrieb</h3>
+        <p data-de="Dashboard + AI-Agent. Registrieren, Wissen einfüttern, live schalten. Dein Agent antwortet wie du — nur schneller." data-en="Dashboard + AI agent. Register, add knowledge, go live. Your agent replies like you — just faster.">Dashboard + AI-Agent. Registrieren, Wissen einfüttern, live schalten. Dein Agent antwortet wie du — nur schneller.</p>
+        <div class="side-feats">
+          <div class="sf"><svg style="stroke:var(--sage)"><use href="#i-check"/></svg><span data-de="AI-Agent trainiert auf deinem Wissen" data-en="AI agent trained on your knowledge">AI-Agent trainiert auf deinem Wissen</span></div>
+          <div class="sf"><svg style="stroke:var(--sage)"><use href="#i-check"/></svg><span data-de="Termine & Bestellungen via Chat" data-en="Bookings & orders via chat">Termine & Bestellungen via Chat</span></div>
+          <div class="sf"><svg style="stroke:var(--sage)"><use href="#i-check"/></svg><span data-de="Dashboard mit allen Gesprächen" data-en="Dashboard with all conversations">Dashboard mit allen Gesprächen</span></div>
+          <div class="sf"><svg style="stroke:var(--sage)"><use href="#i-check"/></svg><span data-de="Jederzeit selbst den Chat übernehmen" data-en="Take over any chat at any time">Jederzeit selbst den Chat übernehmen</span></div>
+        </div>
       </div>
-      <div class="stat">
-        <div class="stat-number">78%</div>
-        <div class="stat-label" data-de="buchen lieber online" data-en="prefer to book online">buchen lieber online</div>
-      </div>
-      <div class="stat">
-        <div class="stat-number">5 min</div>
-        <div class="stat-label" data-de="bis dein Agent live ist" data-en="until your agent is live">bis dein Agent live ist</div>
+      <div class="side-card">
+        <div class="side-icon cust"><svg style="stroke:var(--sage-soft)"><use href="#i-smartphone"/></svg></div>
+        <h3 data-de="Für Kunden" data-en="For customers">Für Kunden</h3>
+        <p data-de="Eine App für alle Betriebe in deiner Nähe. Finden, chatten, buchen — ohne Anrufen, ohne Warten." data-en="One app for all businesses nearby. Find, chat, book — no calls, no waiting.">Eine App für alle Betriebe in deiner Nähe. Finden, chatten, buchen — ohne Anrufen, ohne Warten.</p>
+        <div class="side-feats">
+          <div class="sf"><svg style="stroke:var(--sage)"><use href="#i-check"/></svg><span data-de="Betriebe in der Nähe entdecken" data-en="Discover businesses nearby">Betriebe in der Nähe entdecken</span></div>
+          <div class="sf"><svg style="stroke:var(--sage)"><use href="#i-check"/></svg><span data-de="Sofort chatten, ohne Login" data-en="Chat instantly, no login needed">Sofort chatten, ohne Login</span></div>
+          <div class="sf"><svg style="stroke:var(--sage)"><use href="#i-check"/></svg><span data-de="AI antwortet in Sekunden" data-en="AI responds in seconds">AI antwortet in Sekunden</span></div>
+          <div class="sf"><svg style="stroke:var(--sage)"><use href="#i-check"/></svg><span data-de="Termine direkt im Chat buchen" data-en="Book appointments right in the chat">Termine direkt im Chat buchen</span></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- HOW IT WORKS (für Betriebe) -->
 <section class="steps">
   <div class="steps-inner">
     <div class="steps-header">
@@ -463,60 +720,118 @@
       <div class="step-card">
         <div class="step-num">01</div>
         <h3 data-de="Registrieren" data-en="Sign up">Registrieren</h3>
-        <p data-de="Name, Adresse, Öffnungszeiten. Dauert 2 Minuten, geht vom Handy." data-en="Name, address, opening hours. Takes 2 minutes, works from your phone.">Name, Adresse, Öffnungszeiten. Dauert 2 Minuten, geht vom Handy.</p>
+        <p data-de="Name, Adresse, Öffnungszeiten. Dauert 2 Minuten, geht vom Handy." data-en="Name, address, hours. Takes 2 minutes, works from your phone.">Name, Adresse, Öffnungszeiten. Dauert 2 Minuten, geht vom Handy.</p>
       </div>
       <div class="step-card">
         <div class="step-num">02</div>
         <h3 data-de="Wissen füttern" data-en="Add knowledge">Wissen füttern</h3>
-        <p data-de="Website-URL eingeben, PDF hochladen oder einfach eintippen. Dein Agent lernt dein Geschäft." data-en="Enter your website URL, upload a PDF, or just type it in. Your agent learns your business.">Website-URL eingeben, PDF hochladen oder einfach eintippen. Dein Agent lernt dein Geschäft.</p>
+        <p data-de="Website-URL eingeben, PDF hochladen oder eintippen. Dein Agent lernt dein Geschäft." data-en="Enter your website URL, upload a PDF, or type it in. Your agent learns your business.">Website-URL eingeben, PDF hochladen oder eintippen. Dein Agent lernt dein Geschäft.</p>
       </div>
       <div class="step-card">
         <div class="step-num">03</div>
         <h3 data-de="Live schalten" data-en="Go live">Live schalten</h3>
-        <p data-de="Agent testen, veröffentlichen, fertig. Kunden können sofort chatten." data-en="Test your agent, publish, done. Customers can chat right away.">Agent testen, veröffentlichen, fertig. Kunden können sofort chatten.</p>
+        <p data-de="Agent testen, veröffentlichen — Kunden können sofort in der App chatten." data-en="Test your agent, publish — customers can chat in the app right away.">Agent testen, veröffentlichen — Kunden können sofort in der App chatten.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="features">
-  <div class="features-inner">
-    <div class="features-header">
-      <div class="label" data-de="Was looqa kann" data-en="What looqa does">Was looqa kann</div>
-      <h2 data-de="Alles was dein Betrieb braucht." data-en="Everything your business needs.">Alles was dein Betrieb braucht.</h2>
+<!-- CHAT DEMO -->
+<section class="demo">
+  <div class="demo-inner">
+    <div class="demo-header">
+      <div class="label" data-de="Live-Demo" data-en="Live demo">Live-Demo</div>
+      <h2 data-de="So fühlt sich looqa an." data-en="This is how looqa feels.">So fühlt sich looqa an.</h2>
     </div>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">💬</div>
-        <h3 data-de="AI-Agent" data-en="AI Agent">AI-Agent</h3>
-        <p data-de="Beantwortet Kundenfragen sofort — basierend auf deinem echten Betriebswissen. Keine generischen Antworten." data-en="Answers customer questions instantly — based on your actual business knowledge. No generic responses.">Beantwortet Kundenfragen sofort — basierend auf deinem echten Betriebswissen. Keine generischen Antworten.</p>
+    <div class="demo-chat">
+      <div class="dc-header">
+        <div class="dc-avatar"><svg style="stroke:var(--forest)"><use href="#i-scissors"/></svg></div>
+        <div><div class="dc-name">Salon Anna</div><div class="dc-via">via loo<span style="color:var(--sage)">qa</span></div></div>
+        <div class="dc-status"><div class="dot"></div><span>Online</span></div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">📚</div>
-        <h3 data-de="Wissensbasis" data-en="Knowledge Base">Wissensbasis</h3>
-        <p data-de="Importiere deine Website, lade PDFs hoch oder tippe Infos direkt ein. Der Agent weiß was du weißt." data-en="Import your website, upload PDFs, or type info directly. Your agent knows what you know.">Importiere deine Website, lade PDFs hoch oder tippe Infos direkt ein. Der Agent weiß was du weißt.</p>
+      <div class="demo-msgs">
+        <div class="dm user" data-de="Habt ihr Samstag noch Platz?" data-en="Do you have availability on Saturday?">Habt ihr Samstag noch Platz?</div>
+        <div class="dm agent" data-de="Hallo! Bei Lisa wäre Samstag um 11:00 oder 15:00 Uhr noch frei. Soll ich einen Termin reservieren?" data-en="Hi! Lisa has Saturday at 11am or 3pm available. Shall I book an appointment?">Hallo! Bei Lisa wäre Samstag um 11:00 oder 15:00 Uhr noch frei. Soll ich einen Termin reservieren?</div>
+        <div class="dm-tag t1">looqa · Salon Anna</div>
+        <div class="dm user" data-de="15 Uhr bitte! Waschen, Schneiden, Föhnen." data-en="3pm please! Wash, cut, blow-dry.">15 Uhr bitte! Waschen, Schneiden, Föhnen.</div>
+        <div class="dm agent" data-de="Perfekt — Samstag 15:00 bei Lisa, Waschen + Schneiden + Föhnen. Bis dann!" data-en="Perfect — Saturday 3pm with Lisa, wash + cut + blow-dry. See you then!">Perfekt — Samstag 15:00 bei Lisa, Waschen + Schneiden + Föhnen. Bis dann!</div>
+        <div class="dm-tag t2">looqa · Salon Anna</div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">📅</div>
-        <h3 data-de="Termine & Bestellungen" data-en="Bookings & Orders">Termine & Bestellungen</h3>
-        <p data-de="Kunden buchen Termine oder bestellen direkt im Chat. Du siehst alles im Dashboard." data-en="Customers book appointments or place orders right in the chat. You see everything in the dashboard.">Kunden buchen Termine oder bestellen direkt im Chat. Du siehst alles im Dashboard.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3 data-de="Dashboard" data-en="Dashboard">Dashboard</h3>
-        <p data-de="Alle Gespräche, Buchungen und Insights an einem Ort. Übernimm jederzeit selbst den Chat." data-en="All conversations, bookings, and insights in one place. Take over any chat at any time.">Alle Gespräche, Buchungen und Insights an einem Ort. Übernimm jederzeit selbst den Chat.</p>
+      <div class="demo-input">
+        <div class="demo-input-field" data-de="Nachricht schreiben..." data-en="Type a message...">Nachricht schreiben...</div>
+        <div class="demo-input-btn"><svg style="stroke:var(--forest)"><use href="#i-send"/></svg></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SOCIAL PROOF -->
+<!-- PROOF / TRUST -->
 <section class="proof">
-  <div class="proof-card">
-    <div class="location-pin">📍</div>
-    <h3 data-de="Bald live in Essen-Rüttenscheid." data-en="Coming soon to Essen-Rüttenscheid.">Bald live in Essen-Rüttenscheid.</h3>
-    <p data-de="Wir starten mit lokalen Betrieben im Herzen des Ruhrgebiets. Du willst dabei sein? Meld dich." data-en="We're starting with local businesses in the heart of the Ruhr area. Want to be part of it? Get in touch.">Wir starten mit lokalen Betrieben im Herzen des Ruhrgebiets. Du willst dabei sein? Meld dich.</p>
+  <div class="proof-inner">
+    <div class="proof-header">
+      <div class="label" data-de="Warum looqa" data-en="Why looqa">Warum looqa</div>
+      <h2 data-de="Gebaut f&uuml;r lokale Betriebe." data-en="Built for local businesses.">Gebaut f&uuml;r lokale Betriebe.</h2>
+    </div>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-icon"><svg style="stroke:var(--sage-dim)"><use href="#i-brain"/></svg></div>
+        <h3 data-de="Trainiert auf deinem Wissen" data-en="Trained on your knowledge">Trainiert auf deinem Wissen</h3>
+        <p data-de="Dein Agent kennt deine Preise, Leistungen und &Ouml;ffnungszeiten. Er antwortet nur mit dem, was du ihm beigebracht hast &mdash; nie erfunden." data-en="Your agent knows your prices, services, and hours. It only answers with what you taught it &mdash; never makes things up.">Dein Agent kennt deine Preise, Leistungen und &Ouml;ffnungszeiten. Er antwortet nur mit dem, was du ihm beigebracht hast &mdash; nie erfunden.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon"><svg style="stroke:var(--sage-dim)"><use href="#i-zap"/></svg></div>
+        <h3 data-de="Antwortet in Sekunden" data-en="Responds in seconds">Antwortet in Sekunden</h3>
+        <p data-de="Kein Warten, kein Besetztzeichen. Dein Agent antwortet sofort &mdash; auch nachts, am Wochenende und im Urlaub." data-en="No waiting, no busy signal. Your agent responds instantly &mdash; even at night, on weekends, and during holidays.">Kein Warten, kein Besetztzeichen. Dein Agent antwortet sofort &mdash; auch nachts, am Wochenende und im Urlaub.</p>
+      </div>
+      <div class="proof-card">
+        <div class="proof-icon"><svg style="stroke:var(--sage-dim)"><use href="#i-shield"/></svg></div>
+        <h3 data-de="DSGVO-konform" data-en="GDPR compliant">DSGVO-konform</h3>
+        <p data-de="Daten bleiben in der EU. Keine Weitergabe an Dritte. Du beh&auml;ltst die volle Kontrolle &uuml;ber dein Wissen und deine Gespr&auml;che." data-en="Data stays in the EU. No sharing with third parties. You keep full control over your knowledge and conversations.">Daten bleiben in der EU. Keine Weitergabe an Dritte. Du beh&auml;ltst die volle Kontrolle &uuml;ber dein Wissen und deine Gespr&auml;che.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist" id="waitlist">
+  <div class="waitlist-inner">
+    <div class="waitlist-badge"><span class="dot"></span><span data-de="Early Access" data-en="Early access">Early Access</span></div>
+    <h2 data-de='Sei von Anfang<br>an <span class="accent">dabei.</span>' data-en='Be there from<br>the <span class="accent">start.</span>'>Sei von Anfang<br>an <span class="accent">dabei.</span></h2>
+    <p class="waitlist-sub" data-de="looqa ist gerade im Aufbau. Trag dich ein und wir sagen dir Bescheid, sobald es losgeht." data-en="looqa is currently being built. Sign up and we'll let you know as soon as we launch.">looqa ist gerade im Aufbau. Trag dich ein und wir sagen dir Bescheid, sobald es losgeht.</p>
+
+    <div class="waitlist-form" id="waitlistForm">
+      <div class="wf-row">
+        <input type="email" class="wf-input" id="wfEmail" required
+          placeholder="E-Mail" data-de-ph="E-Mail" data-en-ph="Email">
+        <input type="text" class="wf-input" id="wfCity" required
+          placeholder="Stadt oder PLZ" data-de-ph="Stadt oder PLZ" data-en-ph="City or ZIP">
+      </div>
+      <div style="margin-bottom:6px; margin-top:2px;">
+        <span style="font-size:12px; font-weight:500; color:var(--text-muted);" data-de="Ich bin..." data-en="I am...">Ich bin...</span>
+      </div>
+      <div class="wf-role-row">
+        <div class="wf-role" id="roleBusiness" onclick="selectRole('business')">
+          <svg style="stroke:var(--text-muted)"><use href="#i-store"/></svg>
+          <span data-de="Betriebsinhaber" data-en="Business owner">Betriebsinhaber</span>
+        </div>
+        <div class="wf-role" id="roleCustomer" onclick="selectRole('customer')">
+          <svg style="stroke:var(--text-muted)"><use href="#i-user"/></svg>
+          <span data-de="Kunde / Nutzer" data-en="Customer / User">Kunde / Nutzer</span>
+        </div>
+      </div>
+      <button class="wf-submit" id="wfSubmit" disabled onclick="submitWaitlist()">
+        <svg width="16" height="16" style="stroke:var(--forest)"><use href="#i-bell"/></svg>
+        <span data-de="Benachrichtige mich" data-en="Notify me">Benachrichtige mich</span>
+      </button>
+      <div class="wf-note" data-de="Kein Spam. Nur eine E-Mail, wenn es losgeht." data-en="No spam. Just one email when we launch.">Kein Spam. Nur eine E-Mail, wenn es losgeht.</div>
+    </div>
+
+    <div class="wf-success" id="waitlistSuccess">
+      <div class="wf-success-icon"><svg><use href="#i-check"/></svg></div>
+      <h3 data-de="Du bist dabei!" data-en="You're in!">Du bist dabei!</h3>
+      <p data-de="Wir melden uns, sobald es losgeht." data-en="We'll reach out as soon as we launch.">Wir melden uns, sobald es losgeht.</p>
+    </div>
+
   </div>
 </section>
 
@@ -524,44 +839,104 @@
 <section class="final-cta">
   <h2 data-de='Dein Betrieb verdient<br>einen <span class="accent">AI-Agent.</span>' data-en='Your business deserves<br>an <span class="accent">AI agent.</span>'>Dein Betrieb verdient<br>einen <span class="accent">AI-Agent.</span></h2>
   <p data-de="Kostenlos starten. In 5 Minuten live. Keine Kreditkarte nötig." data-en="Start for free. Live in 5 minutes. No credit card required.">Kostenlos starten. In 5 Minuten live. Keine Kreditkarte nötig.</p>
-  <a href="https://app.looqa.de/onboarding/step1" class="final-cta-btn">
-    <span data-de="Jetzt starten" data-en="Get started">Jetzt starten</span>
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-  </a>
+  <div class="cta-btns">
+    <a href="#" class="btn-dark">
+      <span data-de="Betrieb anmelden" data-en="Register your business">Betrieb anmelden</span>
+      <svg width="16" height="16"><use href="#i-arrow"/></svg>
+    </a>
+    <a href="#waitlist" class="btn-outline">
+      <svg width="16" height="16" style="stroke:var(--forest)"><use href="#i-bell"/></svg>
+      <span data-de="Auf die Waitlist" data-en="Join the waitlist">Auf die Waitlist</span>
+    </a>
+  </div>
 </section>
 
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-brand">loo<span>qa</span></div>
-  <div class="footer-text" data-de="Made in Essen · © 2026 looqa" data-en="Made in Essen · © 2026 looqa">Made in Essen · © 2026 looqa</div>
+  <div class="footer-text" data-de="© 2026 looqa" data-en="© 2026 looqa">© 2026 looqa</div>
 </footer>
 
 <script>
-  // i18n toggle
-  const langBtns = document.querySelectorAll('.lang-btn');
-  let currentLang = 'de';
-
-  langBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const lang = btn.dataset.lang;
-      if (lang === currentLang) return;
-      currentLang = lang;
-
-      // Update active state
-      langBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Update html lang
-      document.documentElement.lang = lang;
-
-      // Update all translatable elements
-      document.querySelectorAll('[data-' + lang + ']').forEach(el => {
-        const text = el.getAttribute('data-' + lang);
-        if (text) el.innerHTML = text;
-      });
+// === i18n ===
+const langBtns = document.querySelectorAll('.lang-btn');
+let currentLang = 'de';
+langBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const lang = btn.dataset.lang;
+    if (lang === currentLang) return;
+    currentLang = lang;
+    langBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+      const text = el.getAttribute('data-' + lang);
+      if (text) el.innerHTML = text;
+    });
+    // Update placeholders
+    document.querySelectorAll('[data-' + lang + '-ph]').forEach(el => {
+      el.placeholder = el.getAttribute('data-' + lang + '-ph');
     });
   });
-</script>
+});
 
+// === Waitlist ===
+let selectedRole = null;
+
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('roleBusiness').classList.toggle('active', role === 'business');
+  document.getElementById('roleCustomer').classList.toggle('active', role === 'customer');
+  // Update icon colors
+  document.querySelector('#roleBusiness svg').style.stroke = role === 'business' ? 'var(--sage-dim)' : 'var(--text-muted)';
+  document.querySelector('#roleCustomer svg').style.stroke = role === 'customer' ? 'var(--sage-dim)' : 'var(--text-muted)';
+  validateForm();
+}
+
+function validateForm() {
+  const email = document.getElementById('wfEmail').value.trim();
+  const city = document.getElementById('wfCity').value.trim();
+  const valid = email.includes('@') && email.includes('.') && city.length >= 2 && selectedRole;
+  document.getElementById('wfSubmit').disabled = !valid;
+}
+
+document.getElementById('wfEmail').addEventListener('input', validateForm);
+document.getElementById('wfCity').addEventListener('input', validateForm);
+
+async function submitWaitlist() {
+  const email = document.getElementById('wfEmail').value.trim();
+  const city = document.getElementById('wfCity').value.trim();
+  if (!email || !city || !selectedRole) return;
+
+  const btn = document.getElementById('wfSubmit');
+  btn.disabled = true;
+
+  try {
+    // Supabase REST API — insert into waitlist table
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ email, city, role: selectedRole })
+    });
+
+    if (!res.ok) throw new Error('Request failed');
+  } catch (e) {
+    // Silently fail — still show success to avoid leaking info
+    console.warn('Waitlist submit error:', e);
+  }
+
+  // Show success
+  document.getElementById('waitlistForm').style.display = 'none';
+  document.getElementById('waitlistSuccess').classList.add('show');
+}
+</script>
 </body>
 </html>
